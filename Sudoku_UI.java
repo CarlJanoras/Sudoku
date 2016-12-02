@@ -8,14 +8,16 @@ import java.util.*;
 
 public class Sudoku_UI{
   JFrame frame = new JFrame("Sudoku"); //main frame
-  JFrame solutions = new JFrame("Solution");
+  JFrame solutions = new JFrame("Solution"); //frame for solution
   Container c; //container of all panels to implement card layout
+  Container sol; //container of solutions
   CardLayout card; //main layout
   JPanel gameplay; //for actual game 
   JPanel option; //for choosing size/dimension of puzzle
   JPanel difficultyMenu; //for difficulty level e.g. puzzle x, puzzle y, etc.
   JPanel board = new JPanel();
   JPanel optionMenu;
+  LinkedList <int [][]> puzzleSolutions;
   LinkedList <int [][]> initPuzzles; //initial puzzle container
   int nPuzzles; //number of input puzzles
   int [] subgrids; //dimension of subgrids of puzzle
@@ -189,6 +191,21 @@ public class Sudoku_UI{
     //frame.pack();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setVisible(true);
+  }
+  
+  /*FOR SHOWING SOLUTIONS TO A PUZZLE*/
+  void DrawSolutions(int [][] puzzle){
+  	sol = solutions.getContentPane();
+  	solutions.setLayout(card);
+  	
+  	JPanel [] sols = new JPanel[puzzleSolutions.size()];
+  	
+  	//creating jpanel to contain each solution to the puzzle
+  	for(int i = 0; i < puzzleSolutions.size(); i++){
+  		sols[i] = new JPanel(new GridLayout(puzzle.length, puzzle.length));
+  	}
+  	
+  	solutions.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
   
   /*NOTE TO GROUPMATES: dito niyo po ilagay yung pang solve ng puzzle :D*/
