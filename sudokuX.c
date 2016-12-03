@@ -74,7 +74,7 @@ int inSubgrid(int candidate, int noOfStacks, int stackSize, int subgridSize, int
 
 int inX(int candidate, int noOfStacks, int stackSize, int stackOptions[noOfStacks][stackSize], int topOfStacks[noOfStacks], int currentRow, int currentCol) {
   int row, col, gridValue, currentStack, gridSize = stackSize-1;
-  //check if the candidates row and col is in the 'X' of the grid
+  //check if the candidate's row and col is in the 'X' of the grid
   if (currentRow == currentCol || currentRow+currentCol == gridSize-1) {
     for (row = 0; row < gridSize; row++) {
       for (col = 0; col < gridSize; col++) {
