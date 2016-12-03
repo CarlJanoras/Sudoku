@@ -18,61 +18,62 @@ typedef struct node{
   int subgridSize;
 }puzzle;
 
-void initialize(int** grid, int GridSize, int noOfStacks, int stackOptions[noOfStacks][GridSize], int* topOfStacks, int* firstStack) {
-  int row, col, currentStack, x, gridSize = GridSize-1;
+void initialize(int** grid, int stackSize, int noOfStacks, int stackOptions[noOfStacks][stackSize], int* topOfStacks, int* firstStack) {
+  int row, col, currentStack, x, gridSize = stackSize-1;
   for(row = 0; row < gridSize; row++){
     for(col = 0; col < gridSize; col++){
-      currentStack = (row*gridSize)+col;
-      stackOptions[currentStack][1] = grid[row][col];
+      currentStack = (row*gridSize)+col; //computes the index of the currentStack
+      stackOptions[currentStack][1] = grid[row][col]; //assigns the values of each cell to the stack of values/options
       if (grid[row][col] != 0) {
-        topOfStacks[currentStack]++;
+        topOfStacks[currentStack]++; //updates the indeces of the topOfStacks
       }
       if (grid[row][col] == 0 && *firstStack == -1) {
-        *firstStack = currentStack;
+        *firstStack = currentStack; //assigns the index of the firstStack 
       }
     }
   }
 }
 
-int inRow(int candidate, int noOfStacks, int GridSize, int stackOptions[noOfStacks][GridSize], int topOfStacks[noOfStacks], int currentRow) {
-  int col, gridValue, currentStack, gridSize = GridSize-1;
+int inRow(int candidate, int noOfStacks, int stackSize, int stackOptions[noOfStacks][stackSize], int topOfStacks[noOfStacks], int currentRow) {
+  int col, gridValue, currentStack, gridSize = stackSize-1;
   for (col = 0; col < gridSize; col++) {
-    currentStack = (currentRow*gridSize)+col;
-    gridValue = stackOptions[currentStack][topOfStacks[currentStack]];
+    currentStack = (currentRow*gridSize)+col; //computes the index of the currentStack
+    gridValue = stackOptions[currentStack][topOfStacks[currentStack]]; //get the current value for the currentStack 
     if (candidate == gridValue) {
-      return 1;
+      return 1; //returns 1 if there is a duplicate in the row for the candidate
     }
   }
-  return 0;
+  return 0; //returns 0 if there is no duplicate for the candidate
 }
 
-int inCol(int candidate, int noOfStacks, int GridSize, int stackOptions[noOfStacks][GridSize], int topOfStacks[noOfStacks], int currentCol) {
-  int row, gridValue, currentStack, gridSize = GridSize-1;
+int inCol(int candidate, int noOfStacks, int stackSize, int stackOptions[noOfStacks][stackSize], int topOfStacks[noOfStacks], int currentCol) {
+  int row, gridValue, currentStack, gridSize = stackSize-1;
   for (row = 0; row < gridSize; row++) {
-    currentStack = (row*gridSize)+currentCol;
-    gridValue = stackOptions[currentStack][topOfStacks[currentStack]];
+    currentStack = (row*gridSize)+currentCol; //computes the index of the currentStack
+    gridValue = stackOptions[currentStack][topOfStacks[currentStack]]; //get the current value for the currentStack 
     if (candidate == gridValue) {
-      return 1;
+      return 1; //returns 1 if there is a duplicate in the column for the candidate
     }
   }
-  return 0;
+  return 0; //returns 0 if there is no duplicate for the candidate
 }
 
-int inSubgrid(int candidate, int noOfStacks, int GridSize, int subgridSize, int stackOptions[noOfStacks][GridSize], int topOfStacks[noOfStacks], int startingCol, int startingRow) {
-  int row, col, gridValue, currentStack, gridSize = GridSize-1;
+int inSubgrid(int candidate, int noOfStacks, int stackSize, int subgridSize, int stackOptions[noOfStacks][stackSize], int topOfStacks[noOfStacks], int startingCol, int startingRow) {
+  int row, col, gridValue, currentStack, gridSize = stackSize-1;
   for (row = 0; row < subgridSize; row++) {
     for (col = 0; col < subgridSize; col++) {
-      currentStack = ((startingRow+row)*gridSize)+(startingCol+col);
-      gridValue = stackOptions[currentStack][topOfStacks[currentStack]];
+      currentStack = ((startingRow+row)*gridSize)+(startingCol+col); //computes the index of the currentStack
+      gridValue = stackOptions[currentStack][topOfStacks[currentStack]]; //get the current value for the currentStack 
       if (candidate == gridValue) {
-        return 1;
+        return 1; //returns 1 if there is a duplicate in the subgrid for the candidate
       }
     }
   }
-  return 0;
+  return 0; //returns 0 if there is no duplicate for the candidate
 }
 
-int inX() {
+int inX(int candidate, int noOfStacks, int stackSize, int stackOptions[noOfStacks][stackSize], int topOfStacks[noOfStacks]) {
+  int row, col, gridValue, currentStack, gridSize = stackSize-1;
 
 }
 
@@ -85,31 +86,52 @@ int inXY() {
 }
 
 void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) {
-  int x, row, col, candidate, GridSize = gridSize+1, solutionNo = 0;
-  int firstStack = -1, currentStack, backtrack; 
-  int UsedInRow, UsedInCol, UsedInSubgrid;
-  int currentRow, currentCol, startingRow, startingCol;
-  int topOfStacks[noOfStacks]; //array of the current top of each stack
-  int stackOptions[noOfStacks][GridSize]; //array of possible values for each stack
-  int permanentStacks[noOfStacks]; //array of the current top of each permanent stack
+  //noOfStacks is based on number of cells in the puzzle
+  int row, col; //traverses the cells of the grid
+
+  int stackSize = gridSize+1; //size of each stack
+ 
+  int solutionNo = 0; //indicates number of possible solutions
+  
+  int candidate; //assigns the possible values for each cells 
+  
+  int firstStack = -1; //points to the first cell that have a value zero (initialized to -1 for a possible firstStack w/ index zero) 
+
+  int currentStack; //traverses which cell is currently filled with possible values (holds the index of the currentStack)  
+
+  int backtrack; //serves as flag that tells if backtracking should be done
+  
+  int UsedInRow, UsedInCol, UsedInSubgrid; //holds the values (1[if used], 0[not used]) for the checking of candidates
+  
+  int currentRow, currentCol, startingRow, startingCol; //stores the indexes for checking the candidate
+  
+  int topOfStacks[noOfStacks]; //array of indeces of the top of each stack used to access the stackOptions
+
+  int stackOptions[noOfStacks][stackSize]; //array of possible values for each stack (format: stackOptions[in currentStack][index of the top of the current stack(topOfStacks[currentStack])])
+
+  int permanentStacks[noOfStacks]; //array of the indeces of the top of each permanent stack (this holds the index of the permanent values)
+  
+  //additional variable
+  int x;
 
   //initialize permanentStacks topOfStacks to zero to remove trash value
-  for (x = 0; x < noOfStacks; x++) {
-    permanentStacks[x] = topOfStacks[x] = 0;
+  for (currentStack = 0; currentStack < noOfStacks; currentStack++) {
+    permanentStacks[currentStack] = topOfStacks[currentStack] = 0;
   }
 
   //initialize stackOptions to zero to remove trash value
   for (row = 0; row < noOfStacks; row++){
-    for(col = 0; col < GridSize; col++){
+    for(col = 0; col < stackSize; col++){
       stackOptions[row][col] = 0;
     }
   }
 
-  //initialize the stackOptions, topOfStacks and firstStack based on the given puzzle
-  initialize(grid, GridSize, noOfStacks, stackOptions, topOfStacks, &firstStack);
+  //initialize the stackOptions, topOfStacks and firstStack based on the given puzzle or grid
+  initialize(grid, stackSize, noOfStacks, stackOptions, topOfStacks, &firstStack);
 
-  for (x = 0; x < noOfStacks; x++) {
-    permanentStacks[x] = topOfStacks[x];
+  //initialize permanentStacks based on the initial topOfStacks
+  for (currentStack = 0; currentStack < noOfStacks; currentStack++) {
+    permanentStacks[currentStack] = topOfStacks[currentStack];
   }
 
   currentStack = firstStack; 
@@ -117,6 +139,12 @@ void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) 
 
   //fill the first stack
   for (candidate = gridSize; candidate >= 0; candidate--) {
+    if (candidate != 0) {
+    	
+    }
+
+
+
     if (candidate == 0 && topOfStacks[currentStack] == 0) {
       backtrack = 1;
       currentStack = currentStack-2;
@@ -129,11 +157,11 @@ void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) 
     startingCol = currentCol-(currentCol%subgridSize);
 
     //check row for duplicates
-    UsedInRow = inRow(candidate, noOfStacks, GridSize, stackOptions, topOfStacks, currentRow);
+    UsedInRow = inRow(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentRow);
     //check col for duplicates
-    UsedInCol = inCol(candidate, noOfStacks, GridSize, stackOptions, topOfStacks, currentCol);
+    UsedInCol = inCol(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentCol);
     //check subgrid for duplicates
-    UsedInSubgrid = inSubgrid(candidate, noOfStacks, GridSize, subgridSize, stackOptions, topOfStacks, startingCol, startingRow);
+    UsedInSubgrid = inSubgrid(candidate, noOfStacks, stackSize, subgridSize, stackOptions, topOfStacks, startingCol, startingRow);
     if (backtrack != 1 && UsedInRow != 1 && UsedInCol != 1 && UsedInSubgrid != 1 && candidate != 0) {
       stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
     }
@@ -159,11 +187,11 @@ void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) 
           startingCol = currentCol-(currentCol%subgridSize);
 
           //check row for duplicates
-          UsedInRow = inRow(candidate, noOfStacks, GridSize, stackOptions, topOfStacks, currentRow);
+          UsedInRow = inRow(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentRow);
           //check col for duplicates
-          UsedInCol = inCol(candidate, noOfStacks, GridSize, stackOptions, topOfStacks, currentCol);
+          UsedInCol = inCol(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentCol);
           //check subgrid for duplicates
-          UsedInSubgrid = inSubgrid(candidate, noOfStacks, GridSize, subgridSize, stackOptions, topOfStacks, startingCol, startingRow);
+          UsedInSubgrid = inSubgrid(candidate, noOfStacks, stackSize, subgridSize, stackOptions, topOfStacks, startingCol, startingRow);
           if (backtrack != 1 && UsedInRow != 1 && UsedInCol != 1 && UsedInSubgrid != 1 && candidate != 0) {
             stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
           }   
