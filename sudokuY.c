@@ -131,12 +131,6 @@ int inY(int candidate, int noOfStacks, int stackSize, int stackOptions[noOfStack
   } else {
     return 1; //returns 1 if grid is invalid for 'Y' solution
   } 
-
-
-}
-
-int inXY() {
-
 }
 
 void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) {
@@ -231,7 +225,7 @@ void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) 
             //check subgrid for duplicates
             UsedInSubgrid = inSubgrid(candidate, noOfStacks, stackSize, subgridSize, stackOptions, topOfStacks, startingCol, startingRow);
             if (UsedInSubgrid != 1) {
-              //check the 'X' of the grid for duplicates
+              //check the 'Y' of the grid for duplicates
               UsedInY = inY(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentRow, currentCol);
               if (UsedInY != 1) {
                 stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
@@ -269,7 +263,7 @@ void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) 
                   //check subgrid for duplicates
                   UsedInSubgrid = inSubgrid(candidate, noOfStacks, stackSize, subgridSize, stackOptions, topOfStacks, startingCol, startingRow);
                   if (UsedInSubgrid != 1) {
-                    //check the 'X' of the grid for duplicates
+                    //check the 'Y' of the grid for duplicates
                     UsedInY = inY(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentRow, currentCol);
                     if (UsedInY != 1) {
                       stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
