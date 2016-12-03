@@ -188,7 +188,7 @@ void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) 
   for (row = 0; row < gridSize; row++) {
     if (solvable == 0) {
       for (col = 0; col < gridSize; col ++) {
-        if ((row == col && row <= gridSize/2 && col <= gridSize/2) || (row+col== gridSize-1 && row <= gridSize/2 && col >= gridSize/2) || (row >= gridSize/2 && col == gridSize/2)) { //check the initial values in the 'X' of the grid
+        if ((row == col && row <= gridSize/2 && col <= gridSize/2) || (row+col== gridSize-1 && row <= gridSize/2 && col >= gridSize/2) || (row >= gridSize/2 && col == gridSize/2)) { //check the initial values in the 'Y' of the grid
           currentStack = (row*gridSize)+col; //computes the index of the currentStack
           x = stackOptions[currentStack][topOfStacks[currentStack]]; //get the value for the currentStack 
           UsedInY = inY(x, noOfStacks, stackSize, stackOptions, topOfStacks, row, col);
