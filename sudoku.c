@@ -139,31 +139,29 @@ void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) 
 
   //fill the first stack
   for (candidate = gridSize; candidate >= 0; candidate--) {
-    if (candidate != 0) {
-    	
-    }
-
-
-
-    if (candidate == 0 && topOfStacks[currentStack] == 0) {
-      backtrack = 1;
+    if (candidate != 0 && backtrack != 1) { //check current candidate as possible stackOption of the current stack
+      //initialize indeces for checking candidate
+      currentRow = currentStack/gridSize;
+      currentCol = currentStack%gridSize;
+      startingRow = currentRow-(currentRow%subgridSize);
+      startingCol = currentCol-(currentCol%subgridSize);
+      
+      //check row for duplicates
+      UsedInRow = inRow(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentRow);
+      if (UsedInRow !=1) {
+        //check col for duplicates
+        UsedInCol = inCol(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentCol);
+        if (UsedInCol != 1) {
+          //check subgrid for duplicates
+          UsedInSubgrid = inSubgrid(candidate, noOfStacks, stackSize, subgridSize, stackOptions, topOfStacks, startingCol, startingRow);
+          if (UsedInSubgrid != 1) {
+              stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
+          }
+        }
+      }
+    } else if (candidate == 0 && topOfStacks[currentStack] == 0) { //if the candidate is zero and there is no assigned candidate for the currentStack do backtrack
+      backtrack = 1; 
       currentStack = currentStack-2;
-      break;
-    }
-    //check current candidate as possible stackOption of the current stack
-    currentRow = currentStack/gridSize;
-    currentCol = currentStack%gridSize;
-    startingRow = currentRow-(currentRow%subgridSize);
-    startingCol = currentCol-(currentCol%subgridSize);
-
-    //check row for duplicates
-    UsedInRow = inRow(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentRow);
-    //check col for duplicates
-    UsedInCol = inCol(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentCol);
-    //check subgrid for duplicates
-    UsedInSubgrid = inSubgrid(candidate, noOfStacks, stackSize, subgridSize, stackOptions, topOfStacks, startingCol, startingRow);
-    if (backtrack != 1 && UsedInRow != 1 && UsedInCol != 1 && UsedInSubgrid != 1 && candidate != 0) {
-      stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
     }
   }
 
@@ -175,32 +173,36 @@ void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) 
     if (currentStack < noOfStacks && backtrack == 0) {
       if (permanentStacks[currentStack] != 1) {
         for (candidate = gridSize; candidate >= 0; candidate--) {
-          if (candidate == 0 && topOfStacks[currentStack] == 0) {
-            backtrack = 1;
+          if (candidate != 0 && backtrack != 1) { //check current candidate as possible stackOption of the current stack
+            //initialize indeces for checking candidate
+            currentRow = currentStack/gridSize;
+            currentCol = currentStack%gridSize;
+            startingRow = currentRow-(currentRow%subgridSize);
+            startingCol = currentCol-(currentCol%subgridSize);
+            
+            //check row for duplicates
+            UsedInRow = inRow(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentRow);
+            if (UsedInRow !=1) {
+              //check col for duplicates
+              UsedInCol = inCol(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentCol);
+              if (UsedInCol != 1) {
+                //check subgrid for duplicates
+                UsedInSubgrid = inSubgrid(candidate, noOfStacks, stackSize, subgridSize, stackOptions, topOfStacks, startingCol, startingRow);
+                if (UsedInSubgrid != 1) {
+                    stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
+                }
+              }
+            }
+          } else if (candidate == 0 && topOfStacks[currentStack] == 0) { //if the candidate is zero and there is no assigned candidate for the currentStack do backtrack
+            backtrack = 1; 
             currentStack = currentStack-2;
-            break;
           }
-          //check current candidate as possible stackOption of the current stack
-          currentRow = currentStack/gridSize;
-          currentCol = currentStack%gridSize;
-          startingRow = currentRow-(currentRow%subgridSize);
-          startingCol = currentCol-(currentCol%subgridSize);
-
-          //check row for duplicates
-          UsedInRow = inRow(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentRow);
-          //check col for duplicates
-          UsedInCol = inCol(candidate, noOfStacks, stackSize, stackOptions, topOfStacks, currentCol);
-          //check subgrid for duplicates
-          UsedInSubgrid = inSubgrid(candidate, noOfStacks, stackSize, subgridSize, stackOptions, topOfStacks, startingCol, startingRow);
-          if (backtrack != 1 && UsedInRow != 1 && UsedInCol != 1 && UsedInSubgrid != 1 && candidate != 0) {
-            stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
-          }   
         }
       }
       currentStack++;
-    } else { //backtrack
-      if (currentStack == noOfStacks) {
-        solutionNo++;
+    } else {
+      if (currentStack == noOfStacks) {  //print the solution if the last stack is reached
+        solutionNo++; //increment solution number
         printString("\n Solution number: \0");
         printInt(solutionNo);
         //print the solution
@@ -213,13 +215,14 @@ void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) 
         }
         putchar_unlocked('\n');
         currentStack--;
-        backtrack = 1;
+        backtrack = 1; //set flag to do backtracking
       }
       
+      //algotrithm to backtrack
       if (backtrack == 1 && permanentStacks[currentStack] != 1){
-        stackOptions[currentStack][topOfStacks[currentStack]] = 0;
-        topOfStacks[currentStack]--;
-        if (topOfStacks[currentStack] >= 1) {
+        stackOptions[currentStack][topOfStacks[currentStack]] = 0; //remove the candidate at the currentStack
+        topOfStacks[currentStack]--; //reduce the index of the topOfStack 
+        if (topOfStacks[currentStack] >= 1) { //if there is still candidates stop backtracking
           backtrack = 0;
           currentStack = currentStack+2;
         }
@@ -227,7 +230,7 @@ void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) 
       currentStack--;
     }
   }
-  if (solutionNo == 0) {
+  if (solutionNo == 0) { //if no solution is found
     printString("\n   No possible solution.\n");
   }
 }
