@@ -133,7 +133,8 @@ void puzzleSolutions(int** grid, int gridSize, int noOfStacks, int subgridSize) 
   for (currentStack = 0; currentStack < noOfStacks; currentStack++) {
     permanentStacks[currentStack] = topOfStacks[currentStack];
   }
-
+  
+  //re-initialize some variables to be used for filling the stacks
   currentStack = firstStack; 
   row = col = backtrack = 0;
 
