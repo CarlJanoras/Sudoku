@@ -24,6 +24,17 @@ public class Sudoku_UI{
   //other variables initialization
   int i;
 
+  //JPanel solutionOption;
+  JPanel solutionMenu;
+  JPanel solutionBoard;
+  JPanel solutionPanel;
+  JPanel solutionOption;
+  JTextField solutionField[][];
+  JButton[] solutionButtons;
+  int[][] solution;
+  BoxLayout bLayout;
+
+
   Sudoku_UI(int nPuzzles,final int [] subgrids, final LinkedList <int [][]> initPuzzles){
     //assigning input data to variables
     this.nPuzzles = nPuzzles;
@@ -154,6 +165,7 @@ public class Sudoku_UI{
     });
     solveRegular.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
+        solutionMenu = new JPanel();
         int [][] puzzle = new int [jtf.length][jtf.length];
         for(int j=0; j < puzzle.length; j++){
           for(int k=0; k < puzzle.length; k++){
@@ -268,6 +280,11 @@ public class Sudoku_UI{
     List stackEssentials = new ArrayList(3);
     int subgridSize = (int) Math.sqrt((double) gridSize);
 
+    //solution UI initializations
+    List solutionsList = new <int[][]> ArrayList();
+    int[][] solution = new int[gridSize][gridSize];
+    int srow, scol;
+
     //initialize permanentStacks topOfStacks to zero to remove trash value
     for(x = 0; x < noOfStacks; x++){
       permanentStacks[x] = topOfStacks[x] = 0;
@@ -350,14 +367,34 @@ public class Sudoku_UI{
         if(currentStack == noOfStacks){
           solutionNo++;
           System.out.println("\n Solution number: " + solutionNo);
+
+          //set/reset srow and scol
+          srow = -1;
+          scol = 0;
+
           //print the solution
           for(x = 0; x < noOfStacks; x++){
             if(x%gridSize == 0){
               System.out.println();
+              srow++; //move to the next row
+              scol = 0; //reset scol
             }
             System.out.printf(" %d", stackOptions[x][topOfStacks[x]]);
+            solution[srow][scol] = stackOptions[x][topOfStacks[x]]; //put the valid value to the solution table
+            scol++; //move to the next column
           }
           System.out.println();
+          solutionsList.add(solution);
+
+          //test print
+          /*for(int count1 = 0; count1 < gridSize; count1++){
+            System.out.println();
+            for(int count2 = 0; count2 < gridSize; count2++){
+              System.out.print(" " + solution[count1][count2]);
+            }
+          }
+          System.out.println();*/
+
           currentStack--;
           backtrack = 1;
         }
@@ -374,8 +411,52 @@ public class Sudoku_UI{
     }
     if(solutionNo == 0){
       System.out.println("\n No possible solution.");
+    }else{
+      createSolutionUI(solutionsList, gridSize, solutionNo);
     }
     //System.out.println("Solved");
+  }
+
+  void createSolutionUI(List solutionsList, int gridSize, int solutionNo){
+    solutionPanel = new JPanel(new BorderLayout(10,10));
+    solutionOption = new JPanel();
+    solutionField = new JTextField[gridSize][gridSize];
+    solutionButtons = new JButton[solutionNo];
+    bLayout = new BoxLayout(solutionOption, BoxLayout.Y_AXIS);
+    //JButton backToSolutions;
+    //JButton backToSolving;
+
+    solutionOption.setLayout(bLayout);
+
+    c.add("solutionPanel", solutionPanel);
+    c.add("solutionMenu", solutionMenu);
+
+    for(int solCount = 0; solCount < solutionNo; solCount++){
+      solutionBoard = new JPanel();
+      solution = (int[][]) solutionsList.get(solCount);
+      solutionButtons[solCount] = new JButton("Solution " + solCount+1);
+      //add action listener
+      solutionButtons[solCount].addActionListener(new ActionListener(){
+        public void actionPerformed(ActionEvent e){
+          solutionBoard.setLayout(new GridLayout(gridSize, gridSize));
+          for(int count1 = 0; count1 < gridSize; count1++){
+            for(int count2 = 0; count2 < gridSize; count2++){
+              solutionField[count1][count2] = new JTextField(3);
+              solutionField[count1][count2].setFont(new Font("Arial", Font.BOLD, 20));
+              solutionField[count1][count2].setHorizontalAlignment(JTextField.CENTER);
+              solutionField[count1][count2].setText(Integer.toString(solution[count1][count2]));
+              solutionField[count1][count2].setEditable(false);
+              solutionBoard.add(solutionField[count1][count2]);
+            }
+          }
+          solutionPanel.add(solutionBoard, BorderLayout.CENTER);
+          card.show(c, "solutionPanel");
+        }
+      });
+      solutionOption.add(solutionButtons[solCount]);
+    }
+    solutionMenu.add(solutionOption);
+    card.show(c, "solutionMenu");
   }
 
   void SolveX(int [][] puzzle){
