@@ -1000,5 +1000,208 @@ public class Sudoku_UI{
   }
   void SolveXY(int [][] puzzle){
     //insert code for checking XY puzzle here
+    int solvable = 0; //serves as flag if the initial values of the grid does not violate the rules 
+    int x, row, col, candidate, solutionNo = 0;
+    int noOfStacks = puzzle.length*puzzle.length;
+    int gridSize = puzzle.length;
+    int gridSizePlus = gridSize+1;
+    int firstStack = -1, currentStack, backtrack;
+    int usedInRow, usedInCol, usedInSubgrid, usedInX, usedInY;
+    int currentRow, currentCol, startingRow, startingCol;
+    int topOfStacks[] = new int[noOfStacks]; //array of the current top of each stack
+    int stackOptions[][] = new int[noOfStacks][gridSizePlus]; //array of possible values for each stack
+    int permanentStacks[] = new int[noOfStacks]; //array of the current top of each permanent stack
+    List stackEssentials = new ArrayList(3);
+    int subgridSize = (int) Math.sqrt((double) gridSize);
+
+    //solution UI initializations
+    List solutionsList = new <int[][]> ArrayList();
+    int[][] solution;
+    int srow, scol;
+
+    //initialize permanentStacks topOfStacks to zero to remove trash value
+    for(x = 0; x < noOfStacks; x++){
+      permanentStacks[x] = topOfStacks[x] = 0;
+    }
+
+    //initialize stackOptions to zero to remove trash value
+    for(row = 0; row < noOfStacks; row++){
+      for(col = 0; col < gridSizePlus; col++){
+        stackOptions[row][col] = 0;
+      }
+    }
+    //initialize the stackOptions, topOfStacks and firstStack based on the given puzzle
+    stackEssentials = initialize(puzzle, stackOptions, topOfStacks, firstStack);
+    stackOptions = (int[][]) stackEssentials.get(0);
+    topOfStacks = (int[]) stackEssentials.get(1);
+    firstStack = (int) stackEssentials.get(2);
+
+    for(x = 0; x < noOfStacks; x++){
+      permanentStacks[x] = topOfStacks[x];
+    }
+
+    //check the given grid for possible violation of the initial values in the 'Y' of the grid
+    for (row = 0; row < gridSize; row++) {
+      if (solvable == 0) {
+        for (col = 0; col < gridSize; col ++) {
+          if (row == col || row+col == gridSize-1) { //check the initial values in the 'Y' of the grid
+            currentStack = (row*gridSize)+col; //computes the index of the currentStack
+            x = stackOptions[currentStack][topOfStacks[currentStack]]; //get the value for the currentStack 
+            usedInY = inY(x, gridSize, stackOptions, topOfStacks, row, col);
+            if (usedInY == 1 && x != 0) {
+              usedInX = inX(x, gridSize, stackOptions, topOfStacks, row, col);
+              if (usedInX == 1 && x != 0) {
+                solvable = 1;
+                break;
+              }
+            }
+          }
+        }
+      } else {
+        break;
+      }
+    }
+    
+    if (solvable == 0) { //continue to solve for the possible solution if the initial grid is valid
+      currentStack = firstStack;
+      row = col = backtrack = 0;
+
+      //fill the first stack
+      for(candidate = gridSize; candidate >= 0; candidate--){
+          if (candidate != 0 && backtrack != 1) { //check current candidate as possible stackOption of the current stack
+          //initialize indeces for checking candidate
+          currentRow = currentStack/gridSize;
+          currentCol = currentStack%gridSize;
+          startingRow = currentRow-(currentRow%subgridSize);
+          startingCol = currentCol-(currentCol%subgridSize);
+          
+          //check row for duplicates
+          usedInRow = inRow(candidate, gridSize, stackOptions, topOfStacks, currentRow);
+          if (usedInRow !=1) {
+            //check col for duplicates
+            usedInCol = inCol(candidate, gridSize, stackOptions, topOfStacks, currentCol);
+            if (usedInCol != 1) {
+              //check subgrid for duplicates
+              usedInSubgrid = inSubgrid(candidate, gridSize, stackOptions, topOfStacks, startingCol, startingRow);
+              if (usedInSubgrid != 1) {
+                //check the 'Y' of the grid for duplicates
+                usedInY = inY(candidate, gridSize, stackOptions, topOfStacks, currentRow, currentCol);
+                if (usedInY != 1) {
+                  //check the 'X' of the grid for duplicates
+                  usedInX = inX(x, gridSize, stackOptions, topOfStacks, row, col);
+                  if (usedInX == 1 && x != 0) {
+                    solvable = 1;
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        } else if (candidate == 0 && topOfStacks[currentStack] == 0) { //if the candidate is zero and there is no assigned candidate for the currentStack do backtrack
+          backtrack = 1; 
+          currentStack = currentStack-2;
+        }
+      }
+
+      currentStack++;
+
+      while(topOfStacks[firstStack ] > 0){
+        //fill the stackOptions
+        if(currentStack < noOfStacks && backtrack == 0){
+          if(permanentStacks[currentStack] != 1){
+            for(candidate = gridSize; candidate >= 0; candidate--){
+              if (candidate != 0 && backtrack != 1) { //check current candidate as possible stackOption of the current stack
+                //initialize indeces for checking candidate
+                currentRow = currentStack/gridSize;
+                currentCol = currentStack%gridSize;
+                startingRow = currentRow-(currentRow%subgridSize);
+                startingCol = currentCol-(currentCol%subgridSize);
+                
+                //check row for duplicates
+                usedInRow = inRow(candidate, gridSize, stackOptions, topOfStacks, currentRow);
+                if (usedInRow !=1) {
+                  //check col for duplicates
+                  usedInCol = inCol(candidate, gridSize, stackOptions, topOfStacks, currentCol);
+                  if (usedInCol != 1) {
+                    //check subgrid for duplicates
+                    usedInSubgrid = inSubgrid(candidate, gridSize, stackOptions, topOfStacks, startingCol, startingRow);
+                    if (usedInSubgrid != 1) {
+                      //check the 'Y' of the grid for duplicates
+                      usedInY = inY(candidate, gridSize, stackOptions, topOfStacks, currentRow, currentCol);
+                      if (usedInY != 1) {
+                        //check the 'X' of the grid for duplicates
+                        usedInX = inX(x, gridSize, stackOptions, topOfStacks, row, col);
+                        if (usedInX == 1 && x != 0) {
+                          solvable = 1;
+                          break;
+                        }
+                      }
+                    }
+                  }
+                }
+              } else if (candidate == 0 && topOfStacks[currentStack] == 0) { //if the candidate is zero and there is no assigned candidate for the currentStack do backtrack
+                backtrack = 1; 
+                currentStack = currentStack-2;
+              }if(candidate == 0 && topOfStacks[currentStack] == 0){
+                backtrack = 1;
+                currentStack = currentStack-2;
+                break;
+              }
+            }
+          }
+          currentStack++;
+        }else{  //backtrack
+          if(currentStack == noOfStacks){
+            solutionNo++;
+            System.out.println("\n Solution number: " + solutionNo);
+            //set/reset srow and scol
+            solution = new int[gridSize][gridSize];
+            srow = -1;
+            scol = 0;
+
+            //print the solution
+            for(x = 0; x < noOfStacks; x++){
+              if(x%gridSize == 0){
+                //System.out.println();
+                srow++; //move to the next row
+                scol = 0; //reset scol
+              }
+              //System.out.printf(" %d", stackOptions[x][topOfStacks[x]]);
+              solution[srow][scol] = stackOptions[x][topOfStacks[x]]; //put the valid value to the solution table
+              scol++; //move to the next column
+            }
+            //System.out.println();
+            solutionsList.add(solution);
+
+            //test print
+            for(int count1 = 0; count1 < gridSize; count1++){
+              System.out.println();
+              for(int count2 = 0; count2 < gridSize; count2++){
+                System.out.print(" " + solution[count1][count2]);
+              }
+            }
+            System.out.println();
+
+            currentStack--;
+            backtrack = 1;
+          }
+          if(backtrack == 1 && permanentStacks[currentStack] != 1){
+            stackOptions[currentStack][topOfStacks[currentStack]] = 0;
+            topOfStacks[currentStack]--;
+            if(topOfStacks[currentStack] >= 1){
+              backtrack = 0;
+              currentStack = currentStack+2;
+            }
+          }
+          currentStack--;
+        }
+      }
+    }
+    if(solutionNo == 0){
+      //System.out.println("\n No possible solution.");
+      JOptionPane.showMessageDialog(frame,"No possible solution.", "No Solution",    JOptionPane.PLAIN_MESSAGE);
+    }else{
+      createSolutionUI(solutionsList, gridSize, solutionNo);
+    }
   }
 }
