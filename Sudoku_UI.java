@@ -368,7 +368,7 @@ public class Sudoku_UI{
       }else{  //backtrack
         if(currentStack == noOfStacks){
           solutionNo++;
-          System.out.println("\n Solution number: " + solutionNo);
+          //System.out.println("\n Solution number: " + solutionNo);
 
           //set/reset srow and scol
           srow = -1;
@@ -377,15 +377,15 @@ public class Sudoku_UI{
           //print the solution
           for(x = 0; x < noOfStacks; x++){
             if(x%gridSize == 0){
-              System.out.println();
+              //System.out.println();
               srow++; //move to the next row
               scol = 0; //reset scol
             }
-            System.out.printf(" %d", stackOptions[x][topOfStacks[x]]);
+            //System.out.printf(" %d", stackOptions[x][topOfStacks[x]]);
             solution[srow][scol] = stackOptions[x][topOfStacks[x]]; //put the valid value to the solution table
             scol++; //move to the next column
           }
-          System.out.println();
+          //System.out.println();
           solutionsList.add(solution);
 
           //test print
@@ -412,7 +412,7 @@ public class Sudoku_UI{
       }
     }
     if(solutionNo == 0){
-      System.out.println("\n No possible solution.");
+      //System.out.println("\n No possible solution.");
     }else{
       createSolutionUI(solutionsList, gridSize, solutionNo);
     }
@@ -452,7 +452,7 @@ public class Sudoku_UI{
     for(int solCount = 0; solCount < solutionNo; solCount++){
       solutionBoard = new JPanel();
       solution = (int[][]) solutionsList.get(solCount);
-      solutionButtons[solCount] = new JButton("Solution " + solCount+1);
+      solutionButtons[solCount] = new JButton("Solution " + (solCount+1));
       //add action listener
       solutionButtons[solCount].addActionListener(new ActionListener(){
         public void actionPerformed(ActionEvent e){
