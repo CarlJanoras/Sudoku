@@ -145,6 +145,7 @@ public class Sudoku_UI{
     });
     solveX.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
+        solutionMenu = new JPanel();
         boolean error = false;
         int [][] puzzle = new int [jtf.length][jtf.length];
         for(int j=0; j < puzzle.length; j++){
@@ -166,6 +167,7 @@ public class Sudoku_UI{
     });
     solveY.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
+        solutionMenu = new JPanel();
         boolean error = false;
         int [][] puzzle = new int [jtf.length][jtf.length];
         for(int j=0; j < puzzle.length; j++){
@@ -187,6 +189,7 @@ public class Sudoku_UI{
     });
     solveXY.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
+        solutionMenu = new JPanel();
         boolean error = false;
         int [][] puzzle = new int [jtf.length][jtf.length];
         for(int j=0; j < puzzle.length; j++){
@@ -545,71 +548,6 @@ public class Sudoku_UI{
     }else{
       createSolutionUI(solutionsList, gridSize, solutionNo);
     }
-  }
-
-  void createSolutionUI(List solutionsList, final int gridSize, int solutionNo){
-    solutionPanel = new JPanel(new BorderLayout(10,10));
-    solutionOption = new JPanel();
-    solutionField = new JTextField[gridSize][gridSize];
-    solutionButtons = new JButton[solutionNo];
-    bLayout = new BoxLayout(solutionOption, BoxLayout.Y_AXIS);
-    final JButton backToSolutions = new JButton("Back to Solutions");
-    JButton backToGame = new JButton("Back to Game");
-    JScrollPane scroll = new JScrollPane(solutionOption);
-    scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-    scroll.setPreferredSize(new Dimension(600, 400));
-
-    solutionOption.setLayout(bLayout);
-    solutionMenu.add(backToGame);
-
-    //adding actionlistener to backToSolutions button
-    backToSolutions.addActionListener(new ActionListener(){
-      public void actionPerformed(ActionEvent e){
-        card.show(c, "solutionMenu");
-      }
-    });
-
-    //adding actionlistener to backtogame button
-    backToGame.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e){
-        card.show(c, "gameplay");
-      }
-    });
-
-    c.add("solutionPanel", solutionPanel);
-    c.add("solutionMenu", solutionMenu);
-
-    for(int solCount = 0; solCount < solutionNo; solCount++){
-      solutionBoard = new JPanel();
-      solution = (int[][]) solutionsList.get(solCount);
-      solutionButtons[solCount] = new JButton("Solution " + (solCount+1));
-      solutionButtons[solCount].putClientProperty("solution", solution);
-      //add action listener
-      solutionButtons[solCount].addActionListener(new ActionListener(){
-        public void actionPerformed(ActionEvent e){
-          solutionBoard.removeAll();
-          solutionBoard.setLayout(new GridLayout(gridSize, gridSize));
-          JButton button = (JButton) e.getSource();
-          int [][] sol = (int [][]) button.getClientProperty("solution");
-          for(int count1 = 0; count1 < gridSize; count1++){
-            for(int count2 = 0; count2 < gridSize; count2++){
-              solutionField[count1][count2] = new JTextField(3);
-              solutionField[count1][count2].setFont(new Font("Arial", Font.BOLD, 20));
-              solutionField[count1][count2].setHorizontalAlignment(JTextField.CENTER);
-              solutionField[count1][count2].setText(Integer.toString(sol[count1][count2]));
-              solutionField[count1][count2].setEditable(false);
-              solutionBoard.add(solutionField[count1][count2]);
-            }
-          }
-          solutionPanel.add(solutionBoard, BorderLayout.CENTER);
-          solutionPanel.add(backToSolutions, BorderLayout.PAGE_START);
-          card.show(c, "solutionPanel");
-        }
-      });
-      solutionOption.add(solutionButtons[solCount]);
-    }
-    solutionMenu.add(scroll);
-    card.show(c, "solutionMenu");
   }
 
   void SolveX(int [][] puzzle){
@@ -1204,4 +1142,71 @@ public class Sudoku_UI{
       createSolutionUI(solutionsList, gridSize, solutionNo);
     }
   }
+
+  void createSolutionUI(List solutionsList, final int gridSize, int solutionNo){
+    solutionPanel = new JPanel(new BorderLayout(10,10));
+    solutionOption = new JPanel();
+    solutionField = new JTextField[gridSize][gridSize];
+    solutionButtons = new JButton[solutionNo];
+    bLayout = new BoxLayout(solutionOption, BoxLayout.Y_AXIS);
+    final JButton backToSolutions = new JButton("Back to Solutions");
+    JButton backToGame = new JButton("Back to Game");
+    JScrollPane scroll = new JScrollPane(solutionOption);
+    scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    scroll.setPreferredSize(new Dimension(600, 400));
+
+    solutionOption.setLayout(bLayout);
+
+    //adding actionlistener to backToSolutions button
+    backToSolutions.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+        card.show(c, "solutionMenu");
+      }
+    });
+
+    solutionMenu.add(backToGame);
+    //adding actionlistener to backtogame button
+    backToGame.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e){
+        card.show(c, "gameplay");
+      }
+    });
+
+    c.add("solutionPanel", solutionPanel);
+    c.add("solutionMenu", solutionMenu);
+
+    for(int solCount = 0; solCount < solutionNo; solCount++){
+      solutionBoard = new JPanel();
+      solution = (int[][]) solutionsList.get(solCount);
+      solutionButtons[solCount] = new JButton("Solution " + (solCount+1));
+      solutionButtons[solCount].putClientProperty("solution", solution);
+      //add action listener
+      solutionButtons[solCount].addActionListener(new ActionListener(){
+        public void actionPerformed(ActionEvent e){
+          solutionBoard.removeAll();
+          solutionBoard.setLayout(new GridLayout(gridSize, gridSize));
+          JButton button = (JButton) e.getSource();
+          int [][] sol = (int [][]) button.getClientProperty("solution");
+          for(int count1 = 0; count1 < gridSize; count1++){
+            for(int count2 = 0; count2 < gridSize; count2++){
+              solutionField[count1][count2] = new JTextField(3);
+              solutionField[count1][count2].setFont(new Font("Arial", Font.BOLD, 20));
+              solutionField[count1][count2].setHorizontalAlignment(JTextField.CENTER);
+              solutionField[count1][count2].setText(Integer.toString(sol[count1][count2]));
+              solutionField[count1][count2].setEditable(false);
+              solutionBoard.add(solutionField[count1][count2]);
+            }
+          }
+          solutionPanel.add(solutionBoard, BorderLayout.CENTER);
+          solutionPanel.add(backToSolutions, BorderLayout.PAGE_START);
+          card.show(c, "solutionPanel");
+        }
+      });
+      solutionOption.add(solutionButtons[solCount]);
+    }
+    solutionMenu.add(scroll);
+    card.show(c, "solutionMenu");
+  }
+
 }
+
