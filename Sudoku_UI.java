@@ -414,6 +414,7 @@ public class Sudoku_UI{
     }
     if(solutionNo == 0){
       //System.out.println("\n No possible solution.");
+      JOptionPane.showMessageDialog(frame,"No possible solution.", "No Solution",    JOptionPane.PLAIN_MESSAGE);
     }else{
       createSolutionUI(solutionsList, gridSize, solutionNo);
     }
