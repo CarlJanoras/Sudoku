@@ -24,7 +24,10 @@ public class Sudoku_UI{
   //other variables initialization
   int i;
 
-  //JPanel solutionOption;
+  //class variable List of solutions
+  List solutionsList;
+
+  //Solution UI variables
   JPanel solutionMenu;
   JPanel solutionBoard;
   JPanel solutionPanel;
@@ -35,53 +38,43 @@ public class Sudoku_UI{
   BoxLayout bLayout;
 
 
-  Sudoku_UI(int nPuzzles,final int [] subgrids, final LinkedList <int [][]> initPuzzles) throws Exception{
+  Sudoku_UI(int nPuzzles,final int [] subgrids, final LinkedList <int [][]> initPuzzles){
     //assigning input data to variables
     this.nPuzzles = nPuzzles;
     this.subgrids = subgrids;
     this.initPuzzles = initPuzzles;
 
     /*DRAWING GUI*/
-    frame.setContentPane(new ImagePanel());
     c = frame.getContentPane(); //setting the container as the content of JFrame
     card = new CardLayout(10,10); //initializing card layout with 10 x 10 space
     c.setLayout(card); // setting layout of container
 
     //initialization of GUI components
-    JPanel mainMenu = new JPanel(null); //for main menu
+    JPanel mainMenu = new JPanel(); //for main menu
     optionMenu = new JPanel();
     gameplay = new JPanel(new BorderLayout(10,10));
     option = new JPanel();
     JPanel solve = new JPanel(new GridLayout(1,4));
-    JPanel checker = new JPanel(new GridLayout(1,5));
     JScrollPane optionScroll = new JScrollPane(option);
-    JButton play = new JButton("START");
+    JButton play = new JButton("PLAY");
     JButton backToMain = new JButton("Back to Main Menu");
     JButton backToOption = new JButton("Back to Puzzle Options");
     JButton solveRegular = new JButton("Solve Regular Sudoku");
     JButton solveX = new JButton("Solve X Sudoku");
     JButton solveY = new JButton("Solve Y Sudoku");
     JButton solveXY = new JButton("Solve XY Sudoku");
-    JButton checkRegular = new JButton("Check Regular Sudoku");
-    JButton checkX = new JButton("Check X Sudoku");
-    JButton checkY = new JButton("Check Y Sudoku");
-    JButton checkXY = new JButton("Check XY Sudoku");
     JButton [] sizeButtonMenu = new JButton[subgrids.length];
     BoxLayout bl = new BoxLayout(option, BoxLayout.Y_AXIS);
 
-    //setting layouts
-    option.setLayout(bl);
-    
     /*EDITING COMPONENTS*/
     play.setFont(new Font("Arial",Font.BOLD, 12));
-    play.setBounds(350,200,200,100);
     backToMain.setFont(new Font("Arial",Font.BOLD, 12));
     backToOption.setFont(new Font("Arial",Font.BOLD, 12));
     optionScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     optionScroll.setPreferredSize(new Dimension(600, 400));
-    mainMenu.setOpaque(false);
-    optionMenu.setOpaque(false);
-    option.setOpaque(false);
+
+    //setting layouts
+    option.setLayout(bl);
 
     /*ADDING ACTION LISTENERS*/
 
@@ -145,87 +138,50 @@ public class Sudoku_UI{
     });
     solveX.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
-        boolean error = false;
         int [][] puzzle = new int [jtf.length][jtf.length];
         for(int j=0; j < puzzle.length; j++){
           for(int k=0; k < puzzle.length; k++){
-            if(jtf[j][k].getText().equals("")){
-              puzzle[j][k] = 0;
-            }else if(jtf[j][k].getText().matches(".*[a-z].*")){
-              JOptionPane.showMessageDialog(frame,"Invalid input!", "Error",    JOptionPane.PLAIN_MESSAGE);
-              jtf[j][k].setBackground(Color.RED);
-              error = true;
-            }else{
-              puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
-              jtf[j][k].setBackground(Color.WHITE);
-            }
+            puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
           }
         }
-        if(error == false)SolveX(puzzle);
+        SolveX(puzzle);
       }
     });
     solveY.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
-        boolean error = false;
         int [][] puzzle = new int [jtf.length][jtf.length];
         for(int j=0; j < puzzle.length; j++){
           for(int k=0; k < puzzle.length; k++){
-            if(jtf[j][k].getText().equals("")){
-              puzzle[j][k] = 0;
-            }else if(jtf[j][k].getText().matches(".*[a-z].*")){
-              JOptionPane.showMessageDialog(frame,"Invalid input!", "Error",    JOptionPane.PLAIN_MESSAGE);
-              jtf[j][k].setBackground(Color.RED);
-              error = true;
-            }else{
-              puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
-              jtf[j][k].setBackground(Color.WHITE);
-            }
+            puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
           }
         }
-        if(error == false)SolveY(puzzle);
+        SolveY(puzzle);
       }
     });
     solveXY.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
-        boolean error = false;
         int [][] puzzle = new int [jtf.length][jtf.length];
         for(int j=0; j < puzzle.length; j++){
           for(int k=0; k < puzzle.length; k++){
-            if(jtf[j][k].getText().equals("")){
-              puzzle[j][k] = 0;
-            }else if(jtf[j][k].getText().matches(".*[a-z].*")){
-              JOptionPane.showMessageDialog(frame,"Invalid input!", "Error",    JOptionPane.PLAIN_MESSAGE);
-              jtf[j][k].setBackground(Color.RED);
-              error = true;
-            }else{
-              puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
-              jtf[j][k].setBackground(Color.WHITE);
-            }
+            puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
           }
         }
-        if(error == false)SolveXY(puzzle);
+        SolveXY(puzzle);
       }
     });
     solveRegular.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
         solutionMenu = new JPanel();
-        boolean error = false;
         int [][] puzzle = new int [jtf.length][jtf.length];
         for(int j=0; j < puzzle.length; j++){
           for(int k=0; k < puzzle.length; k++){
-            if(jtf[j][k].getText().equals("")){
+            if(jtf[j][k].getText().equals(""))
               puzzle[j][k] = 0;
-            }else if(jtf[j][k].getText().matches(".*[a-z].*")){
-              JOptionPane.showMessageDialog(frame,"Invalid input!", "Error",    JOptionPane.PLAIN_MESSAGE);
-              jtf[j][k].setBackground(Color.RED);
-              error = true;
-            }else{
+            else
               puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
-              jtf[j][k].setBackground(Color.WHITE);
-            }
           }
         }
-        if(error == false)SolveRegular(puzzle);
+        SolveRegular(puzzle);
       }
     });
 
@@ -235,12 +191,7 @@ public class Sudoku_UI{
     solve.add(solveX);
     solve.add(solveY);
     solve.add(solveXY);
-    checker.add(backToOption);
-    checker.add(checkRegular);
-    checker.add(checkX);
-    checker.add(checkY);
-    checker.add(checkXY);
-    gameplay.add(checker,BorderLayout.PAGE_START);
+    gameplay.add(backToOption, BorderLayout.PAGE_START);
     gameplay.add(solve, BorderLayout.PAGE_END);
     optionMenu.add(backToMain);
     optionMenu.add(optionScroll);
@@ -250,7 +201,7 @@ public class Sudoku_UI{
     c.add("gameplay", gameplay);
     c.add("optionMenu", optionMenu);
 
-    frame.setSize(1000,500);
+    frame.setSize(700,500);
     //frame.pack();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setVisible(true);
@@ -336,7 +287,8 @@ public class Sudoku_UI{
     int subgridSize = (int) Math.sqrt((double) gridSize);
 
     //solution UI initializations
-    List solutionsList = new <int[][]> ArrayList();
+    //List solutionsList = new <int[][]> ArrayList();
+    solutionsList = new <int[][]> ArrayList();
     int[][] solution;
     int srow, scol;
 
@@ -366,29 +318,25 @@ public class Sudoku_UI{
 
     //fill the first stack
     for(candidate = gridSize; candidate >= 0; candidate--){
-        if (candidate != 0 && backtrack != 1) { //check current candidate as possible stackOption of the current stack
-        //initialize indeces for checking candidate
-        currentRow = currentStack/gridSize;
-        currentCol = currentStack%gridSize;
-        startingRow = currentRow-(currentRow%subgridSize);
-        startingCol = currentCol-(currentCol%subgridSize);
-        
-        //check row for duplicates
-        usedInRow = inRow(candidate, gridSize, stackOptions, topOfStacks, currentRow);
-        if (usedInRow !=1) {
-          //check col for duplicates
-          usedInCol = inCol(candidate, gridSize, stackOptions, topOfStacks, currentCol);
-          if (usedInCol != 1) {
-            //check subgrid for duplicates
-            usedInSubgrid = inSubgrid(candidate, gridSize, stackOptions, topOfStacks, startingCol, startingRow);
-            if (usedInSubgrid != 1) {
-              stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
-            }
-          }
-        }
-      } else if (candidate == 0 && topOfStacks[currentStack] == 0) { //if the candidate is zero and there is no assigned candidate for the currentStack do backtrack
-        backtrack = 1; 
+      if(candidate == 0 && topOfStacks[currentStack] == 0){
+        backtrack = 1;
         currentStack = currentStack-2;
+        break;
+      }
+      //check current candidate as possible stackOption of the current stack
+      currentRow = currentStack/gridSize;
+      currentCol = currentStack%gridSize;
+      startingRow = currentRow-(currentRow%subgridSize);
+      startingCol = currentCol-(currentCol%subgridSize);
+
+      //check row for duplicates
+      usedInRow = inRow(candidate, gridSize, stackOptions, topOfStacks, currentRow);
+      //check col for duplicates
+      usedInCol = inCol(candidate, gridSize, stackOptions, topOfStacks, currentCol);
+      //check subgrid for duplicates
+      usedInSubgrid = inSubgrid(candidate, gridSize, stackOptions, topOfStacks, startingCol, startingRow);
+      if(backtrack != 1 && usedInRow != 1 && usedInCol != 1 && usedInSubgrid != 1 && candidate != 0){
+        stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
       }
     }
 
@@ -399,33 +347,25 @@ public class Sudoku_UI{
       if(currentStack < noOfStacks && backtrack == 0){
         if(permanentStacks[currentStack] != 1){
           for(candidate = gridSize; candidate >= 0; candidate--){
-            if (candidate != 0 && backtrack != 1) { //check current candidate as possible stackOption of the current stack
-              //initialize indeces for checking candidate
-              currentRow = currentStack/gridSize;
-              currentCol = currentStack%gridSize;
-              startingRow = currentRow-(currentRow%subgridSize);
-              startingCol = currentCol-(currentCol%subgridSize);
-              
-              //check row for duplicates
-              usedInRow = inRow(candidate, gridSize, stackOptions, topOfStacks, currentRow);
-              if (usedInRow !=1) {
-                //check col for duplicates
-                usedInCol = inCol(candidate, gridSize, stackOptions, topOfStacks, currentCol);
-                if (usedInCol != 1) {
-                  //check subgrid for duplicates
-                  usedInSubgrid = inSubgrid(candidate, gridSize, stackOptions, topOfStacks, startingCol, startingRow);
-                  if (usedInSubgrid != 1) {
-                    stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
-                  }
-                }
-              }
-            } else if (candidate == 0 && topOfStacks[currentStack] == 0) { //if the candidate is zero and there is no assigned candidate for the currentStack do backtrack
-              backtrack = 1; 
-              currentStack = currentStack-2;
-            }if(candidate == 0 && topOfStacks[currentStack] == 0){
+            if(candidate == 0 && topOfStacks[currentStack] == 0){
               backtrack = 1;
-              currentStack = currentStack-2;
+              currentStack = currentStack - 2;
               break;
+            }
+            //check current candidate as possible stackOption of the current stack
+            currentRow = currentStack/gridSize;
+            currentCol = currentStack%gridSize;
+            startingRow = currentRow - (currentRow % subgridSize);
+            startingCol = currentCol - (currentCol % subgridSize);
+
+            //check row for duplicates
+            usedInRow = inRow(candidate, gridSize, stackOptions, topOfStacks, currentRow);
+            //check col for duplicates
+            usedInCol = inCol(candidate, gridSize, stackOptions, topOfStacks, currentCol);
+            //check subgrid for duplicates
+            usedInSubgrid = inSubgrid(candidate, gridSize, stackOptions, topOfStacks, startingCol, startingRow);
+            if(backtrack != 1 && usedInRow != 1 && usedInCol != 1 && usedInSubgrid != 1 && candidate != 0){
+              stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
             }
           }
         }
@@ -482,11 +422,11 @@ public class Sudoku_UI{
       //System.out.println("\n No possible solution.");
       JOptionPane.showMessageDialog(frame,"No possible solution.", "No Solution",    JOptionPane.PLAIN_MESSAGE);
     }else{
-      createSolutionUI(solutionsList, gridSize, solutionNo);
+      createSolutionUI(gridSize, solutionNo);
     }
   }
 
-  void createSolutionUI(List solutionsList, final int gridSize, int solutionNo){
+  void createSolutionUI(final int gridSize, int solutionNo){
     solutionPanel = new JPanel(new BorderLayout(10,10));
     solutionOption = new JPanel();
     solutionField = new JTextField[gridSize][gridSize];
