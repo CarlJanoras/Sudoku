@@ -366,25 +366,29 @@ public class Sudoku_UI{
 
     //fill the first stack
     for(candidate = gridSize; candidate >= 0; candidate--){
-      if(candidate == 0 && topOfStacks[currentStack] == 0){
-        backtrack = 1;
+        if (candidate != 0 && backtrack != 1) { //check current candidate as possible stackOption of the current stack
+        //initialize indeces for checking candidate
+        currentRow = currentStack/gridSize;
+        currentCol = currentStack%gridSize;
+        startingRow = currentRow-(currentRow%subgridSize);
+        startingCol = currentCol-(currentCol%subgridSize);
+        
+        //check row for duplicates
+        usedInRow = inRow(candidate, gridSize, stackOptions, topOfStacks, currentRow);
+        if (usedInRow !=1) {
+          //check col for duplicates
+          usedInCol = inCol(candidate, gridSize, stackOptions, topOfStacks, currentCol);
+          if (usedInCol != 1) {
+            //check subgrid for duplicates
+            usedInSubgrid = inSubgrid(candidate, gridSize, stackOptions, topOfStacks, startingCol, startingRow);
+            if (usedInSubgrid != 1) {
+              stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
+            }
+          }
+        }
+      } else if (candidate == 0 && topOfStacks[currentStack] == 0) { //if the candidate is zero and there is no assigned candidate for the currentStack do backtrack
+        backtrack = 1; 
         currentStack = currentStack-2;
-        break;
-      }
-      //check current candidate as possible stackOption of the current stack
-      currentRow = currentStack/gridSize;
-      currentCol = currentStack%gridSize;
-      startingRow = currentRow-(currentRow%subgridSize);
-      startingCol = currentCol-(currentCol%subgridSize);
-
-      //check row for duplicates
-      usedInRow = inRow(candidate, gridSize, stackOptions, topOfStacks, currentRow);
-      //check col for duplicates
-      usedInCol = inCol(candidate, gridSize, stackOptions, topOfStacks, currentCol);
-      //check subgrid for duplicates
-      usedInSubgrid = inSubgrid(candidate, gridSize, stackOptions, topOfStacks, startingCol, startingRow);
-      if(backtrack != 1 && usedInRow != 1 && usedInCol != 1 && usedInSubgrid != 1 && candidate != 0){
-        stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
       }
     }
 
@@ -395,25 +399,33 @@ public class Sudoku_UI{
       if(currentStack < noOfStacks && backtrack == 0){
         if(permanentStacks[currentStack] != 1){
           for(candidate = gridSize; candidate >= 0; candidate--){
-            if(candidate == 0 && topOfStacks[currentStack] == 0){
+            if (candidate != 0 && backtrack != 1) { //check current candidate as possible stackOption of the current stack
+              //initialize indeces for checking candidate
+              currentRow = currentStack/gridSize;
+              currentCol = currentStack%gridSize;
+              startingRow = currentRow-(currentRow%subgridSize);
+              startingCol = currentCol-(currentCol%subgridSize);
+              
+              //check row for duplicates
+              usedInRow = inRow(candidate, gridSize, stackOptions, topOfStacks, currentRow);
+              if (usedInRow !=1) {
+                //check col for duplicates
+                usedInCol = inCol(candidate, gridSize, stackOptions, topOfStacks, currentCol);
+                if (usedInCol != 1) {
+                  //check subgrid for duplicates
+                  usedInSubgrid = inSubgrid(candidate, gridSize, stackOptions, topOfStacks, startingCol, startingRow);
+                  if (usedInSubgrid != 1) {
+                    stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
+                  }
+                }
+              }
+            } else if (candidate == 0 && topOfStacks[currentStack] == 0) { //if the candidate is zero and there is no assigned candidate for the currentStack do backtrack
+              backtrack = 1; 
+              currentStack = currentStack-2;
+            }if(candidate == 0 && topOfStacks[currentStack] == 0){
               backtrack = 1;
-              currentStack = currentStack - 2;
+              currentStack = currentStack-2;
               break;
-            }
-            //check current candidate as possible stackOption of the current stack
-            currentRow = currentStack/gridSize;
-            currentCol = currentStack%gridSize;
-            startingRow = currentRow - (currentRow % subgridSize);
-            startingCol = currentCol - (currentCol % subgridSize);
-
-            //check row for duplicates
-            usedInRow = inRow(candidate, gridSize, stackOptions, topOfStacks, currentRow);
-            //check col for duplicates
-            usedInCol = inCol(candidate, gridSize, stackOptions, topOfStacks, currentCol);
-            //check subgrid for duplicates
-            usedInSubgrid = inSubgrid(candidate, gridSize, stackOptions, topOfStacks, startingCol, startingRow);
-            if(backtrack != 1 && usedInRow != 1 && usedInCol != 1 && usedInSubgrid != 1 && candidate != 0){
-              stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
             }
           }
         }
