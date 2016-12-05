@@ -52,7 +52,7 @@ public class Sudoku_UI{
     gameplay = new JPanel(new BorderLayout(10,10));
     option = new JPanel();
     JPanel solve = new JPanel(new GridLayout(1,4));
-    JScrollPane optionScroll = new JScrollPane(optionMenu, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    JScrollPane optionScroll = new JScrollPane(option);
     JButton play = new JButton("PLAY");
     JButton backToMain = new JButton("Back to Main Menu");
     JButton backToOption = new JButton("Back to Puzzle Options");
@@ -67,7 +67,8 @@ public class Sudoku_UI{
     play.setFont(new Font("Arial",Font.BOLD, 12));
     backToMain.setFont(new Font("Arial",Font.BOLD, 12));
     backToOption.setFont(new Font("Arial",Font.BOLD, 12));
-    //optionScroll.setAutoscrolls(true);
+    optionScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    optionScroll.setPreferredSize(new Dimension(600, 400));
 
     //setting layouts
     option.setLayout(bl);
@@ -183,7 +184,6 @@ public class Sudoku_UI{
 
     /*ADDING COMPONENTS TO PANELS*/
     mainMenu.add(play);
-    optionMenu.add(option);
     solve.add(solveRegular);
     solve.add(solveX);
     solve.add(solveY);
@@ -191,6 +191,7 @@ public class Sudoku_UI{
     gameplay.add(backToOption, BorderLayout.PAGE_START);
     gameplay.add(solve, BorderLayout.PAGE_END);
     optionMenu.add(backToMain);
+    optionMenu.add(optionScroll);
 
     /*ADDING PANELS TO CONTAINER AND ASSIGNING KEYWORD TO IMPLEMENT CARD LAYOUT*/
     c.add("mainMenu", mainMenu);
@@ -427,14 +428,16 @@ public class Sudoku_UI{
     bLayout = new BoxLayout(solutionOption, BoxLayout.Y_AXIS);
     final JButton backToSolutions = new JButton("Back to Solutions");
     JButton backToGame = new JButton("Back to Game");
+    JScrollPane scroll = new JScrollPane(solutionOption);
+    scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    scroll.setPreferredSize(new Dimension(600, 400));
 
     solutionOption.setLayout(bLayout);
-    solutionOption.add(backToGame);
+    solutionMenu.add(backToGame);
     
     //adding actionlistener to backToSolutions button
     backToSolutions.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
-        solutionBoard.removeAll();
         card.show(c, "solutionMenu");
       }
     });
@@ -453,16 +456,20 @@ public class Sudoku_UI{
       solutionBoard = new JPanel();
       solution = (int[][]) solutionsList.get(solCount);
       solutionButtons[solCount] = new JButton("Solution " + (solCount+1));
+      solutionButtons[solCount].putClientProperty("solution", solution);
       //add action listener
       solutionButtons[solCount].addActionListener(new ActionListener(){
         public void actionPerformed(ActionEvent e){
+          solutionBoard.removeAll();
           solutionBoard.setLayout(new GridLayout(gridSize, gridSize));
+          JButton button = (JButton) e.getSource();
+          int [][] sol = (int [][]) button.getClientProperty("solution");
           for(int count1 = 0; count1 < gridSize; count1++){
             for(int count2 = 0; count2 < gridSize; count2++){
               solutionField[count1][count2] = new JTextField(3);
               solutionField[count1][count2].setFont(new Font("Arial", Font.BOLD, 20));
               solutionField[count1][count2].setHorizontalAlignment(JTextField.CENTER);
-              solutionField[count1][count2].setText(Integer.toString(solution[count1][count2]));
+              solutionField[count1][count2].setText(Integer.toString(sol[count1][count2]));
               solutionField[count1][count2].setEditable(false);
               solutionBoard.add(solutionField[count1][count2]);
             }
@@ -474,7 +481,7 @@ public class Sudoku_UI{
       });
       solutionOption.add(solutionButtons[solCount]);
     }
-    solutionMenu.add(solutionOption);
+    solutionMenu.add(scroll);
     card.show(c, "solutionMenu");
   }
 
