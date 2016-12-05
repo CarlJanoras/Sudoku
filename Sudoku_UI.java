@@ -52,6 +52,7 @@ public class Sudoku_UI{
     gameplay = new JPanel(new BorderLayout(10,10));
     option = new JPanel();
     JPanel solve = new JPanel(new GridLayout(1,4));
+    JScrollPane optionScroll = new JScrollPane(optionMenu, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     JButton play = new JButton("PLAY");
     JButton backToMain = new JButton("Back to Main Menu");
     JButton backToOption = new JButton("Back to Puzzle Options");
@@ -66,6 +67,7 @@ public class Sudoku_UI{
     play.setFont(new Font("Arial",Font.BOLD, 12));
     backToMain.setFont(new Font("Arial",Font.BOLD, 12));
     backToOption.setFont(new Font("Arial",Font.BOLD, 12));
+    //optionScroll.setAutoscrolls(true);
 
     //setting layouts
     option.setLayout(bl);
@@ -432,6 +434,7 @@ public class Sudoku_UI{
     //adding actionlistener to backToSolutions button
     backToSolutions.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
+        solutionBoard.removeAll();
         card.show(c, "solutionMenu");
       }
     });
