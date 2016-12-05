@@ -35,43 +35,53 @@ public class Sudoku_UI{
   BoxLayout bLayout;
 
 
-  Sudoku_UI(int nPuzzles,final int [] subgrids, final LinkedList <int [][]> initPuzzles){
+  Sudoku_UI(int nPuzzles,final int [] subgrids, final LinkedList <int [][]> initPuzzles) throws Exception{
     //assigning input data to variables
     this.nPuzzles = nPuzzles;
     this.subgrids = subgrids;
     this.initPuzzles = initPuzzles;
 
     /*DRAWING GUI*/
+    frame.setContentPane(new ImagePanel());
     c = frame.getContentPane(); //setting the container as the content of JFrame
     card = new CardLayout(10,10); //initializing card layout with 10 x 10 space
     c.setLayout(card); // setting layout of container
 
     //initialization of GUI components
-    JPanel mainMenu = new JPanel(); //for main menu
+    JPanel mainMenu = new JPanel(null); //for main menu
     optionMenu = new JPanel();
     gameplay = new JPanel(new BorderLayout(10,10));
     option = new JPanel();
     JPanel solve = new JPanel(new GridLayout(1,4));
+    JPanel checker = new JPanel(new GridLayout(1,5));
     JScrollPane optionScroll = new JScrollPane(option);
-    JButton play = new JButton("PLAY");
+    JButton play = new JButton("START");
     JButton backToMain = new JButton("Back to Main Menu");
     JButton backToOption = new JButton("Back to Puzzle Options");
     JButton solveRegular = new JButton("Solve Regular Sudoku");
     JButton solveX = new JButton("Solve X Sudoku");
     JButton solveY = new JButton("Solve Y Sudoku");
     JButton solveXY = new JButton("Solve XY Sudoku");
+    JButton checkRegular = new JButton("Check Regular Sudoku");
+    JButton checkX = new JButton("Check X Sudoku");
+    JButton checkY = new JButton("Check Y Sudoku");
+    JButton checkXY = new JButton("Check XY Sudoku");
     JButton [] sizeButtonMenu = new JButton[subgrids.length];
     BoxLayout bl = new BoxLayout(option, BoxLayout.Y_AXIS);
 
+    //setting layouts
+    option.setLayout(bl);
+    
     /*EDITING COMPONENTS*/
     play.setFont(new Font("Arial",Font.BOLD, 12));
+    play.setBounds(350,200,200,100);
     backToMain.setFont(new Font("Arial",Font.BOLD, 12));
     backToOption.setFont(new Font("Arial",Font.BOLD, 12));
     optionScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     optionScroll.setPreferredSize(new Dimension(600, 400));
-
-    //setting layouts
-    option.setLayout(bl);
+    mainMenu.setOpaque(false);
+    optionMenu.setOpaque(false);
+    option.setOpaque(false);
 
     /*ADDING ACTION LISTENERS*/
 
@@ -135,10 +145,20 @@ public class Sudoku_UI{
     });
     solveX.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
+        boolean error = false;
         int [][] puzzle = new int [jtf.length][jtf.length];
         for(int j=0; j < puzzle.length; j++){
           for(int k=0; k < puzzle.length; k++){
-            puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
+            if(jtf[j][k].getText().equals("")){
+              puzzle[j][k] = 0;
+            }else if(jtf[j][k].getText().matches(".*[a-z].*")){
+              JOptionPane.showMessageDialog(frame,"Invalid input!", "Error",    JOptionPane.PLAIN_MESSAGE);
+              jtf[j][k].setBackground(Color.RED);
+              error = true;
+            }else{
+              puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
+              jtf[j][k].setBackground(Color.WHITE);
+            }
           }
         }
         SolveX(puzzle);
@@ -146,10 +166,20 @@ public class Sudoku_UI{
     });
     solveY.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
+        boolean error = false;
         int [][] puzzle = new int [jtf.length][jtf.length];
         for(int j=0; j < puzzle.length; j++){
           for(int k=0; k < puzzle.length; k++){
-            puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
+            if(jtf[j][k].getText().equals("")){
+              puzzle[j][k] = 0;
+            }else if(jtf[j][k].getText().matches(".*[a-z].*")){
+              JOptionPane.showMessageDialog(frame,"Invalid input!", "Error",    JOptionPane.PLAIN_MESSAGE);
+              jtf[j][k].setBackground(Color.RED);
+              error = true;
+            }else{
+              puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
+              jtf[j][k].setBackground(Color.WHITE);
+            }
           }
         }
         SolveY(puzzle);
@@ -157,10 +187,20 @@ public class Sudoku_UI{
     });
     solveXY.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
+        boolean error = false;
         int [][] puzzle = new int [jtf.length][jtf.length];
         for(int j=0; j < puzzle.length; j++){
           for(int k=0; k < puzzle.length; k++){
-            puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
+            if(jtf[j][k].getText().equals("")){
+              puzzle[j][k] = 0;
+            }else if(jtf[j][k].getText().matches(".*[a-z].*")){
+              JOptionPane.showMessageDialog(frame,"Invalid input!", "Error",    JOptionPane.PLAIN_MESSAGE);
+              jtf[j][k].setBackground(Color.RED);
+              error = true;
+            }else{
+              puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
+              jtf[j][k].setBackground(Color.WHITE);
+            }
           }
         }
         SolveXY(puzzle);
@@ -169,16 +209,23 @@ public class Sudoku_UI{
     solveRegular.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
         solutionMenu = new JPanel();
+        boolean error = false;
         int [][] puzzle = new int [jtf.length][jtf.length];
         for(int j=0; j < puzzle.length; j++){
           for(int k=0; k < puzzle.length; k++){
-            if(jtf[j][k].getText().equals(""))
+            if(jtf[j][k].getText().equals("")){
               puzzle[j][k] = 0;
-            else
+            }else if(jtf[j][k].getText().matches(".*[a-z].*")){
+              JOptionPane.showMessageDialog(frame,"Invalid input!", "Error",    JOptionPane.PLAIN_MESSAGE);
+              jtf[j][k].setBackground(Color.RED);
+              error = true;
+            }else{
               puzzle [j][k] = Integer.parseInt(jtf[j][k].getText());
+              jtf[j][k].setBackground(Color.WHITE);
+            }
           }
         }
-        SolveRegular(puzzle);
+        if(error == false)SolveRegular(puzzle);
       }
     });
 
@@ -188,7 +235,12 @@ public class Sudoku_UI{
     solve.add(solveX);
     solve.add(solveY);
     solve.add(solveXY);
-    gameplay.add(backToOption, BorderLayout.PAGE_START);
+    checker.add(backToOption);
+    checker.add(checkRegular);
+    checker.add(checkX);
+    checker.add(checkY);
+    checker.add(checkXY);
+    gameplay.add(checker,BorderLayout.PAGE_START);
     gameplay.add(solve, BorderLayout.PAGE_END);
     optionMenu.add(backToMain);
     optionMenu.add(optionScroll);
@@ -198,7 +250,7 @@ public class Sudoku_UI{
     c.add("gameplay", gameplay);
     c.add("optionMenu", optionMenu);
 
-    frame.setSize(700,500);
+    frame.setSize(1000,500);
     //frame.pack();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setVisible(true);
@@ -285,7 +337,7 @@ public class Sudoku_UI{
 
     //solution UI initializations
     List solutionsList = new <int[][]> ArrayList();
-    int[][] solution = new int[gridSize][gridSize];
+    int[][] solution;
     int srow, scol;
 
     //initialize permanentStacks topOfStacks to zero to remove trash value
@@ -371,7 +423,9 @@ public class Sudoku_UI{
           solutionNo++;
           //System.out.println("\n Solution number: " + solutionNo);
 
+
           //set/reset srow and scol
+          solution = new int[gridSize][gridSize];
           srow = -1;
           scol = 0;
 
@@ -390,13 +444,13 @@ public class Sudoku_UI{
           solutionsList.add(solution);
 
           //test print
-          /*for(int count1 = 0; count1 < gridSize; count1++){
+          for(int count1 = 0; count1 < gridSize; count1++){
             System.out.println();
             for(int count2 = 0; count2 < gridSize; count2++){
               System.out.print(" " + solution[count1][count2]);
             }
           }
-          System.out.println();*/
+          System.out.println();
 
           currentStack--;
           backtrack = 1;
@@ -418,7 +472,6 @@ public class Sudoku_UI{
     }else{
       createSolutionUI(solutionsList, gridSize, solutionNo);
     }
-    //System.out.println("Solved");
   }
 
   void createSolutionUI(List solutionsList, final int gridSize, int solutionNo){
@@ -435,14 +488,14 @@ public class Sudoku_UI{
 
     solutionOption.setLayout(bLayout);
     solutionMenu.add(backToGame);
-    
+
     //adding actionlistener to backToSolutions button
     backToSolutions.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
         card.show(c, "solutionMenu");
       }
     });
-    
+
     //adding actionlistener to backtogame button
     backToGame.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e){
