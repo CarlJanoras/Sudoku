@@ -285,7 +285,7 @@ public class Sudoku_UI{
 
     //solution UI initializations
     List solutionsList = new <int[][]> ArrayList();
-    int[][] solution = new int[gridSize][gridSize];
+    int[][] solution;
     int srow, scol;
 
     //initialize permanentStacks topOfStacks to zero to remove trash value
@@ -371,7 +371,9 @@ public class Sudoku_UI{
           solutionNo++;
           //System.out.println("\n Solution number: " + solutionNo);
 
+
           //set/reset srow and scol
+          solution = new int[gridSize][gridSize];
           srow = -1;
           scol = 0;
 
@@ -390,13 +392,13 @@ public class Sudoku_UI{
           solutionsList.add(solution);
 
           //test print
-          /*for(int count1 = 0; count1 < gridSize; count1++){
+          for(int count1 = 0; count1 < gridSize; count1++){
             System.out.println();
             for(int count2 = 0; count2 < gridSize; count2++){
               System.out.print(" " + solution[count1][count2]);
             }
           }
-          System.out.println();*/
+          System.out.println();
 
           currentStack--;
           backtrack = 1;
@@ -418,7 +420,6 @@ public class Sudoku_UI{
     }else{
       createSolutionUI(solutionsList, gridSize, solutionNo);
     }
-    //System.out.println("Solved");
   }
 
   void createSolutionUI(List solutionsList, final int gridSize, int solutionNo){
@@ -435,14 +436,14 @@ public class Sudoku_UI{
 
     solutionOption.setLayout(bLayout);
     solutionMenu.add(backToGame);
-    
+
     //adding actionlistener to backToSolutions button
     backToSolutions.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
         card.show(c, "solutionMenu");
       }
     });
-    
+
     //adding actionlistener to backtogame button
     backToGame.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e){
