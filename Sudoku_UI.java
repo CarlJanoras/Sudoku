@@ -274,9 +274,7 @@ public class Sudoku_UI{
         }
       }
     }
-    /*returnValues.set(0, stackOptions);
-    returnValues.set(1, topOfStacks);
-    returnValues.set(2, firstStack);*/
+    
     returnValues.add(stackOptions);
     returnValues.add(topOfStacks);
     returnValues.add(firstStack);
@@ -383,7 +381,6 @@ public class Sudoku_UI{
     } 
   }
 
-  /*NOTE TO GROUPMATES: dito niyo po ilagay yung pang solve ng puzzle :D*/
   void SolveRegular(int [][] puzzle){
     //insert code for checking regular puzzle here
     int x, row, col, candidate, solutionNo = 0;
@@ -543,7 +540,7 @@ public class Sudoku_UI{
       }
     }
     if(solutionNo == 0){
-      //System.out.println("\n No possible solution.");
+      System.out.println("\n No possible solution.");
       JOptionPane.showMessageDialog(frame,"No possible solution.", "No Solution",    JOptionPane.PLAIN_MESSAGE);
     }else{
       createSolutionUI(solutionsList, gridSize, solutionNo);
@@ -596,7 +593,7 @@ public class Sudoku_UI{
     for (row = 0; row < gridSize; row++) {
       if (solvable == 0) {
         for (col = 0; col < gridSize; col ++) {
-          if (row == col || row+col == gridSize-1) { //check the initial values in the 'X' of the grid
+          //if (row == col || row+col == gridSize-1) { //check the initial values in the 'X' of the grid
             currentStack = (row*gridSize)+col; //computes the index of the currentStack
             x = stackOptions[currentStack][topOfStacks[currentStack]]; //get the value for the currentStack 
             usedInX = inX(x, gridSize, stackOptions, topOfStacks, row, col);
@@ -604,7 +601,7 @@ public class Sudoku_UI{
               solvable = 1;
               break;
             }
-          }
+          //}
         }
       } else {
         break;
@@ -737,12 +734,13 @@ public class Sudoku_UI{
       }
     }
     if(solutionNo == 0){
-      //System.out.println("\n No possible solution.");
+      System.out.println("\n No possible solution.");
       JOptionPane.showMessageDialog(frame,"No possible solution.", "No Solution",    JOptionPane.PLAIN_MESSAGE);
     }else{
       createSolutionUI(solutionsList, gridSize, solutionNo);
     }
   }
+
   void SolveY(int [][] puzzle){
     //insert code for checking Y puzzle here
     int solvable = 0; //serves as flag if the initial values of the grid does not violate the rules 
@@ -789,7 +787,7 @@ public class Sudoku_UI{
     for (row = 0; row < gridSize; row++) {
       if (solvable == 0) {
         for (col = 0; col < gridSize; col ++) {
-          if (row == col || row+col == gridSize-1) { //check the initial values in the 'Y' of the grid
+          //if ((row == col && row <= gridSize/2 && col <= gridSize/2) || (row+col== gridSize-1 && row <= gridSize/2 && col >= gridSize/2) || (row >= gridSize/2 && col == gridSize/2)) { //check the initial values in the 'Y' of the grid
             currentStack = (row*gridSize)+col; //computes the index of the currentStack
             x = stackOptions[currentStack][topOfStacks[currentStack]]; //get the value for the currentStack 
             usedInY = inY(x, gridSize, stackOptions, topOfStacks, row, col);
@@ -797,7 +795,7 @@ public class Sudoku_UI{
               solvable = 1;
               break;
             }
-          }
+          //}
         }
       } else {
         break;
@@ -930,12 +928,13 @@ public class Sudoku_UI{
       }
     }
     if(solutionNo == 0){
-      //System.out.println("\n No possible solution.");
+      System.out.println("\n No possible solution.");
       JOptionPane.showMessageDialog(frame,"No possible solution.", "No Solution",    JOptionPane.PLAIN_MESSAGE);
     }else{
       createSolutionUI(solutionsList, gridSize, solutionNo);
     }
   }
+
   void SolveXY(int [][] puzzle){
     //insert code for checking XY puzzle here
     int solvable = 0; //serves as flag if the initial values of the grid does not violate the rules 
@@ -978,20 +977,21 @@ public class Sudoku_UI{
       permanentStacks[x] = topOfStacks[x];
     }
 
-    //check the given grid for possible violation of the initial values in the 'Y' of the grid
+    //check the given grid for possible violation of the initial values in the 'XY' of the grid
     for (row = 0; row < gridSize; row++) {
       if (solvable == 0) {
         for (col = 0; col < gridSize; col ++) {
-          if (row == col || row+col == gridSize-1) { //check the initial values in the 'Y' of the grid
-            currentStack = (row*gridSize)+col; //computes the index of the currentStack
-            x = stackOptions[currentStack][topOfStacks[currentStack]]; //get the value for the currentStack 
-            usedInY = inY(x, gridSize, stackOptions, topOfStacks, row, col);
-            if (usedInY == 1 && x != 0) {
-              usedInX = inX(x, gridSize, stackOptions, topOfStacks, row, col);
-              if (usedInX == 1 && x != 0) {
-                solvable = 1;
-                break;
-              }
+          currentStack = (row*gridSize)+col; //computes the index of the currentStack
+          x = stackOptions[currentStack][topOfStacks[currentStack]]; //get the value for the currentStack 
+          usedInY = inY(x, gridSize, stackOptions, topOfStacks, row, col);
+          if (usedInY == 1 && x != 0) {
+            solvable = 1; 
+            break;
+          } else if (usedInY != 1 && x != 0) {
+            usedInX = inX(x, gridSize, stackOptions, topOfStacks, row, col);
+            if (usedInX == 1 && x != 0) {
+              solvable = 1; 
+              break;
             }
           }
         }
@@ -999,7 +999,7 @@ public class Sudoku_UI{
         break;
       }
     }
-    
+    //System.out.println("solvable: " + solvable);
     if (solvable == 0) { //continue to solve for the possible solution if the initial grid is valid
       currentStack = firstStack;
       row = col = backtrack = 0;
@@ -1026,10 +1026,9 @@ public class Sudoku_UI{
                 usedInY = inY(candidate, gridSize, stackOptions, topOfStacks, currentRow, currentCol);
                 if (usedInY != 1) {
                   //check the 'X' of the grid for duplicates
-                  usedInX = inX(x, gridSize, stackOptions, topOfStacks, row, col);
-                  if (usedInX == 1 && x != 0) {
-                    solvable = 1;
-                    break;
+                  usedInX = inX(x, gridSize, stackOptions, topOfStacks, currentRow, currentCol);
+                  if (usedInX != 1 && x != 0) {
+                    stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
                   }
                 }
               }
@@ -1068,10 +1067,9 @@ public class Sudoku_UI{
                       usedInY = inY(candidate, gridSize, stackOptions, topOfStacks, currentRow, currentCol);
                       if (usedInY != 1) {
                         //check the 'X' of the grid for duplicates
-                        usedInX = inX(x, gridSize, stackOptions, topOfStacks, row, col);
-                        if (usedInX == 1 && x != 0) {
-                          solvable = 1;
-                          break;
+                        usedInX = inX(x, gridSize, stackOptions, topOfStacks, currentRow, currentCol);
+                        if (usedInX != 1 && x != 0) {
+                          stackOptions[currentStack][++topOfStacks[currentStack]] = candidate;
                         }
                       }
                     }
@@ -1136,7 +1134,7 @@ public class Sudoku_UI{
       }
     }
     if(solutionNo == 0){
-      //System.out.println("\n No possible solution.");
+      System.out.println("\n No possible solution.");
       JOptionPane.showMessageDialog(frame,"No possible solution.", "No Solution",    JOptionPane.PLAIN_MESSAGE);
     }else{
       createSolutionUI(solutionsList, gridSize, solutionNo);
